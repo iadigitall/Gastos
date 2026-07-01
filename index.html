@@ -287,11 +287,17 @@
               <div class="debt-vsep"></div>
               <div class="debt-right">
                 <div class="debt-right-item">
-                  <div class="debt-right-label">Despesas <span class="lbl-arrow">›</span></div>
+                  <div class="debt-right-left">
+                    <div class="debt-accent-bar" style="background:var(--pink)"></div>
+                    <div class="debt-right-label">Despesas</div>
+                  </div>
                   <div id="stat-expenses" class="debt-right-val expense-val">R$ 0,00</div>
                 </div>
                 <div class="debt-right-item">
-                  <div class="debt-right-label">Pendentes <span class="lbl-arrow">›</span></div>
+                  <div class="debt-right-left">
+                    <div class="debt-accent-bar" style="background:var(--amber)"></div>
+                    <div class="debt-right-label">Pendentes</div>
+                  </div>
                   <div id="stat-pending" class="debt-right-val pending-val">R$ 0,00</div>
                 </div>
               </div>
@@ -441,8 +447,11 @@
             <input id="expense-desc" type="text" placeholder="Ex: Almoço, Uber, Mercado..." autocomplete="off">
           </div>
           <div class="form-group">
-            <label for="expense-value">Valor (R$)</label>
-            <input id="expense-value" type="number" step="0.01" min="0.01" placeholder="0,00" inputmode="decimal">
+            <label for="expense-value">Valor</label>
+            <div class="value-input-wrap">
+              <span class="value-input-prefix">R$</span>
+              <input id="expense-value" class="value-input-big" type="number" step="0.01" min="0.01" placeholder="0,00" inputmode="decimal">
+            </div>
           </div>
           <div class="form-group">
             <label for="expense-date">Data</label>
