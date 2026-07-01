@@ -305,23 +305,36 @@ function renderDashboard() {
 function renderHomeContas() {
   const container = document.getElementById('home-contas');
   if (!container) return;
-  const COLORS = ['#FF4444', '#A3FF47', '#F59E0B', '#60A5FA', '#A78BFA'];
+  const today = todayStr();
+  const COLORS = ['#9ffa43', '#f87171', '#F59E0B', '#44e2cd', '#a78bfa'];
   const contas = Object.entries(state.contas)
     .filter(([, c]) => !c.paga)
     .sort(([, a], [, b]) => (a.vencimento || '9999').localeCompare(b.vencimento || '9999'))
-    .slice(0, 3);
+    .slice(0, 4);
   if (!contas.length) {
     container.innerHTML = `<div class="home-empty-state">${ICO.inbox(32)}<p>Nenhuma conta pendente</p><span>Toque em + para adicionar uma conta</span></div>`;
     return;
   }
-  container.innerHTML = contas.map(([, c], i) => `
-    <div class="conta-pill">
-      <div class="conta-pill-top">
-        <span class="conta-pill-name">${escHtml(c.nome)}</span>
-        <div class="conta-pill-dot" style="background:${COLORS[i % COLORS.length]};color:${COLORS[i % COLORS.length]}"></div>
+  container.innerHTML = contas.map(([, c], i) => {
+    const color = COLORS[i % COLORS.length];
+    let sub = '';
+    if (c.vencimento) {
+      if (c.vencimento < today) sub = `<span style="color:#f87171">Vencida</span>`;
+      else if (c.vencimento === today) sub = `<span style="color:#F59E0B">Vence hoje</span>`;
+      else {
+        const days = Math.round((new Date(c.vencimento + ' 12:00:00') - new Date(today + ' 12:00:00')) / 86400000);
+        sub = `Vence em ${days} dia${days === 1 ? '' : 's'}`;
+      }
+    }
+    return `<div class="home-conta-row">
+      <div class="home-conta-dot" style="background:${color};box-shadow:0 0 6px ${color}"></div>
+      <div class="home-conta-info">
+        <span class="home-conta-name">${escHtml(c.nome)}</span>
+        ${sub ? `<span class="home-conta-sub">${sub}</span>` : ''}
       </div>
-      <span class="conta-pill-val">${formatCurrency(c.valor)}</span>
-    </div>`).join('');
+      <span class="home-conta-val">${formatCurrency(c.valor)}</span>
+    </div>`;
+  }).join('');
 }
 
 /* ─── HOME: Notificações ─── */
@@ -454,7 +467,7 @@ function renderBills() {
     const overdue=!c.paga&&c.vencimento&&c.vencimento<today;
     const meta=c.vencimento?`${overdue?`${ICO.warning(12)} Venceu em: `:'Vence em: '}${formatDate(c.vencimento)}`:'Sem data de vencimento';
     let fixedBadge='';if(c.contaFixaId){fixedBadge=c.parcelaAtual&&c.totalParcelas?`<span class="fixed-badge">${ICO.repeat(10)} ${c.parcelaAtual}/${c.totalParcelas}</span>`:`<span class="fixed-badge">${ICO.repeat(10)} Fixa</span>`;}
-    return`<div class="bill-item${c.paga?' paid':''}" id="bill-${escHtml(id)}"><div class="bill-status-dot"></div><div class="bill-info"><div class="bill-name">${escHtml(c.nome)}${fixedBadge}</div><div class="bill-meta${overdue?' overdue':''}">${meta}</div></div><div class="bill-value">${formatCurrency(c.valor)}</div>${c.paga?`<button class="btn-pay done" disabled>${ICO.check(16)}</button>`:`<button class="btn-pay" onclick="payBill('${escHtml(id)}')">Pagar</button>`}${!c.paga?`<button class="btn-edit-bill" onclick="openEditBill('${escHtml(id)}')" title="Editar">${ICO.edit(16)}</button>`:''  }${!c.paga?`<button class="btn-delete-bill" onclick="confirmDeleteBill('${escHtml(id)}','${escHtml(c.nome)}')">${ICO.trash(16)}</button>`:''}</div>`;
+    return`<div class="bill-item${c.paga?' paid':''}${overdue?' overdue':''}" id="bill-${escHtml(id)}"><div class="bill-status-dot"></div><div class="bill-info"><div class="bill-name">${escHtml(c.nome)}${fixedBadge}</div><div class="bill-meta${overdue?' overdue':''}">${meta}</div></div><div class="bill-value">${formatCurrency(c.valor)}</div>${c.paga?`<button class="btn-pay done" disabled>${ICO.check(16)}</button>`:`<button class="btn-pay" onclick="payBill('${escHtml(id)}')">Pagar</button>`}${!c.paga?`<button class="btn-edit-bill" onclick="openEditBill('${escHtml(id)}')" title="Editar">${ICO.edit(16)}</button>`:''  }${!c.paga?`<button class="btn-delete-bill" onclick="confirmDeleteBill('${escHtml(id)}','${escHtml(c.nome)}')">${ICO.trash(16)}</button>`:''}</div>`;
   }).join('')}</div>`;
 }
 
@@ -810,10 +823,12 @@ function renderCategoryGrid() {
   if (!grid) return;
   const chevron = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
   const selCat = CATEGORIAS[state.selectedCategory];
+  const selColor = CAT_COLORS[state.selectedCategory] || '#9ffa43';
+  const selBg = selColor.startsWith('#') ? selColor : selColor;
   grid.innerHTML = `
     <div class="cat-dropdown" id="cat-dropdown">
       <button type="button" class="cat-trigger" id="cat-trigger">
-        <span class="cat-trigger-icon">${selCat.icon(18)}</span>
+        <span class="cat-trigger-icon cat-${state.selectedCategory}" style="color:${selColor};background:${selColor}1a">${selCat.icon(18)}</span>
         <span class="cat-trigger-label">${selCat.label}</span>
         <span class="cat-trigger-chevron">${chevron}</span>
       </button>
