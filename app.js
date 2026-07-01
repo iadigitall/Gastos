@@ -538,12 +538,32 @@ function renderHistory() {
   const entries=Object.entries(state.gastos);
   if(!entries.length){container.innerHTML=`<div class="empty-state"><span class="empty-icon">${ICO.inbox(40)}</span><p>Nenhum gasto lançado</p><p class="empty-sub">Use o botão + para adicionar</p></div>`;return;}
   entries.sort(([,a],[,b])=>(b.criadoEm||0)-(a.criadoEm||0));
-  container.innerHTML=`<div class="history-inner">${entries.map(([id,g])=>{
-    const cat=CATEGORIAS[g.categoria]||CATEGORIAS.outros;
-    const hora = g.criadoEm ? new Date(g.criadoEm).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) : '';
-    const waIcon = g.origem==='whatsapp' ? ' · 📱' : '';
-    return`<div class="history-item"><span class="history-cat-icon cat-${g.categoria||'outros'}">${cat.icon(26)}</span><div class="history-info"><div class="history-desc">${escHtml(g.descricao)}</div><div class="history-meta">${cat.label} · ${formatDate(g.data)}${hora ? ' · '+hora : ''}${waIcon}</div></div><div class="history-value">-${formatCurrency(g.valor)}</div><button class="btn-delete-expense" onclick="confirmDeleteExpense('${escHtml(id)}','${escHtml(g.descricao)}')">${ICO.trash(16)}</button></div>`;
-  }).join('')}</div>`;
+
+  const todayMs=new Date().setHours(0,0,0,0);
+  const yesterMs=todayMs-86400000;
+  const groups=new Map();
+  entries.forEach(([id,g])=>{
+    const d=g.criadoEm?new Date(g.criadoEm):new Date((g.data||'')+' 12:00:00');
+    const dayMs=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();
+    if(!groups.has(dayMs))groups.set(dayMs,[]);
+    groups.get(dayMs).push([id,g]);
+  });
+
+  const html=[...groups.entries()].sort(([a],[b])=>b-a).map(([dayMs,items])=>{
+    let label;
+    if(dayMs===todayMs)label='HOJE';
+    else if(dayMs===yesterMs)label='ONTEM';
+    else label=new Date(dayMs).toLocaleDateString('pt-BR',{day:'numeric',month:'long'}).toUpperCase();
+    const rows=items.map(([id,g])=>{
+      const cat=CATEGORIAS[g.categoria]||CATEGORIAS.outros;
+      const hora=g.criadoEm?new Date(g.criadoEm).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'';
+      const waIcon=g.origem==='whatsapp'?' · 📱':'';
+      return`<div class="history-item"><span class="history-cat-icon cat-${g.categoria||'outros'}">${cat.icon(24)}</span><div class="history-info"><div class="history-desc">${escHtml(g.descricao)}</div><div class="history-meta">${cat.label}${hora?' · '+hora:''}${waIcon}</div></div><div class="history-value">-${formatCurrency(g.valor)}</div><button class="btn-delete-expense" onclick="confirmDeleteExpense('${escHtml(id)}','${escHtml(g.descricao)}')">${ICO.trash(16)}</button></div>`;
+    }).join('');
+    return`<div class="history-group"><div class="history-group-label">${label}</div>${rows}</div>`;
+  }).join('');
+
+  container.innerHTML=`<div class="history-inner">${html}</div>`;
 }
 
 function openCloseMonthModal() {
