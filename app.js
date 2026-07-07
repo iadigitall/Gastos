@@ -797,6 +797,15 @@ function setupModals() {
   document.querySelectorAll('[data-close]').forEach(el=>el.addEventListener('click',()=>closeModal(el.dataset.close)));
 }
 function openModal(id){document.getElementById(id).classList.remove('hidden');}
+function openWhatsAppModal(){
+  const link = document.getElementById('btn-abrir-whatsapp');
+  if (link) {
+    const nome = state._profileName || '';
+    const texto = nome ? `Olá, Finanças! Meu nome é ${nome} 👋` : 'Olá, Finanças! 👋';
+    link.href = `https://wa.me/5561993720350?text=${encodeURIComponent(texto)}`;
+  }
+  openModal('modal-whatsapp-bot');
+}
 function closeModal(id){document.getElementById(id).classList.add('hidden');}
 
 function showToast(msg,duration=2600,position='bottom'){
