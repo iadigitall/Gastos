@@ -233,7 +233,8 @@ module.exports = async function handler(req, res) {
         for (const [cat, val] of sorted) reply += `• ${cat}: R$ ${fmt(val)}\n`;
       }
     } else if (/ajuda|help|oi|ola|olá/.test(text)) {
-      reply = `Olá! 👋 Sou seu assistente financeiro.\n\nPode me falar naturalmente:\n• _"gastei 50 no almoço"_\n• _"paguei 30 de uber"_\n• _"deu 89 na farmácia"_\n\nOu use os comandos:\n*resumo* — saldo do mês\n*contas* — contas pendentes\n*gastos* — gastos por categoria`;
+      const nome = data.profile.nome || '';
+      reply = `Olá${nome ? `, *${nome}*` : ''}! 👋 Sou seu assistente financeiro.\n\nPode me falar naturalmente:\n• _"gastei 50 no almoço"_\n• _"paguei 30 de uber"_\n• _"deu 89 na farmácia"_\n\nOu use os comandos:\n*resumo* — saldo do mês\n*contas* — contas pendentes\n*gastos* — gastos por categoria`;
     } else {
       // Tenta interpretar como gasto em linguagem natural via IA
       const { gasto } = await parseGastoIA(text);
