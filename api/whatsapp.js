@@ -119,9 +119,9 @@ async function sendWhatsApp(to, message) {
 
 function parseGastoSimples(text) {
   const valorMatch = text.match(/(\d+(?:[.,]\d+)?)\s*(?:reais?|reias?|contos?|pila|mangos?|real)?/i);
-  if (!valorMatch) return null;
+  if (!valorMatch) return { gasto: null, debug: '' };
   const valor = parseFloat(valorMatch[1].replace(',', '.'));
-  if (!valor || valor <= 0) return null;
+  if (!valor || valor <= 0) return { gasto: null, debug: '' };
 
   const t = text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
   let categoria = 'outros';
