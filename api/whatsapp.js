@@ -83,7 +83,7 @@ function resumoMes(data) {
   msg += '\n';
   if (limite > 0) {
     const pctLimite = Math.round((total / limite) * 100);
-    msg += `🎯 Limite: R$ ${fmt(limite)} — ${pctLimite}% usado\n`;
+    msg += `🎯 Limite: R$ ${fmt(limite)} (${pctLimite}% usado)\n`;
   }
   if (topCat.length) {
     msg += `\n🏆 *Top categorias:*\n`;
@@ -91,7 +91,7 @@ function resumoMes(data) {
   }
   if (contasPendentes.length) {
     msg += `\n⚠️ *${contasPendentes.length} conta(s) pendente(s):*\n`;
-    for (const c of contasPendentes.slice(0, 3)) msg += `  ${c.nome} — R$ ${fmt(c.valor)}\n`;
+    for (const c of contasPendentes.slice(0, 3)) msg += `  ${c.nome}: R$ ${fmt(c.valor)}\n`;
   }
   return msg.trim();
 }
@@ -216,7 +216,7 @@ module.exports = async function handler(req, res) {
         reply = '✅ Nenhuma conta pendente este mês!';
       } else {
         reply = `📋 *Contas pendentes (${contas.length}):*\n`;
-        for (const c of contas) reply += `• ${c.nome} — R$ ${fmt(c.valor)}\n`;
+        for (const c of contas) reply += `• ${c.nome}: R$ ${fmt(c.valor)}\n`;
       }
     } else if (/gasto|categori/.test(text)) {
       const gastos = Object.values(data.mes.gastos || {});
@@ -234,7 +234,7 @@ module.exports = async function handler(req, res) {
       }
     } else if (/ajuda|help|oi|ola|olá/.test(text)) {
       const nome = data.profile.nome || '';
-      reply = `Olá${nome ? `, *${nome}*` : ''}! 👋 Sou seu assistente financeiro.\n\nPode me falar naturalmente:\n• _"gastei 50 no almoço"_\n• _"paguei 30 de uber"_\n• _"deu 89 na farmácia"_\n\nOu use os comandos:\n*resumo* — saldo do mês\n*contas* — contas pendentes\n*gastos* — gastos por categoria`;
+      reply = `Olá${nome ? `, *${nome}*` : ''}! 👋 Sou seu assistente financeiro.\n\nPode me falar naturalmente:\n• _"gastei 50 no almoço"_\n• _"paguei 30 de uber"_\n• _"deu 89 na farmácia"_\n\nOu use os comandos:\n*resumo*: saldo do mês\n*contas*: contas pendentes\n*gastos*: gastos por categoria`;
     } else {
       // Tenta interpretar como gasto em linguagem natural via IA
       const { gasto } = await parseGastoIA(text);
