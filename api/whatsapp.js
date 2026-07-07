@@ -243,7 +243,7 @@ module.exports = async function handler(req, res) {
         const mesAtual = data_br.slice(0, 7);
         const entry = { descricao: gasto.descricao, valor: gasto.valor, categoria: gasto.categoria, data: data_br, criadoEm: Date.now(), origem: 'whatsapp' };
         await db.ref(`users/${user.uid}/meses/${mesAtual}/gastos`).push(entry);
-        reply = `✅ *Gasto salvo!*\n💸 R$ ${fmt(gasto.valor)} — ${gasto.descricao}\n📂 ${gasto.categoria}`;
+        reply = `✅ *Gasto salvo com sucesso!*\n💸 R$ ${fmt(gasto.valor)} ${gasto.descricao}\n📂 ${gasto.categoria}`;
       } else {
         reply = `Não entendi. Tente incluir o valor, tipo:\n_"comprei um remédio e gastei 5 reais"_`;
       }
