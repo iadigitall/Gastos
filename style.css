@@ -1150,15 +1150,17 @@ body::after {
   .app-wrapper { margin-left: 0; padding-top: var(--header-h); padding-bottom: 100px; }
 
   .app-header {
-    left: 0; padding: 0 20px;
+    left: 0; padding: 0 12px;
     height: var(--header-h); flex-wrap: nowrap;
     justify-content: space-between; gap: 8px;
     background: rgba(13,13,13,0.8);
     border-bottom: 1px solid rgba(255,255,255,0.07);
   }
   .header-left { display: none; } /* Hide greeting on mobile to save space */
-  .header-right { gap: 12px; justify-content: flex-end; width: auto; flex: 1; }
+  .header-right { gap: 8px; justify-content: flex-end; width: auto; flex: 1; }
   .header-month-group { flex: none; margin: 0; }
+  .month-display { padding: 4px 10px 4px 4px; }
+  .header-actions { gap: 8px; }
   .calendar-btn-wrap { display: none; }
   .header-avatar svg { width: 28px; height: 28px; }
 
@@ -1504,9 +1506,13 @@ body::after {
 }
 .header-logout-btn.visible { display: flex; }
 @media (max-width: 768px) {
-  /* No mobile o cabecalho fica estreito demais pro botao Sair caber sem
-     cortar — sair ja esta disponivel na tela de Perfil. */
-  .header-logout-btn.visible { display: none; }
+  /* No mobile nao cabe o botao com texto sem cortar — vira circulo so com
+     o icone, do mesmo tamanho dos outros botoes do cabecalho. */
+  .header-logout-btn.visible {
+    width: 36px; height: 36px; padding: 0; gap: 0;
+    justify-content: center; border-radius: 50%;
+  }
+  .header-logout-text { display: none; }
 }
 .header-logout-btn:hover {
   border-color: rgba(255,68,68,0.4);
