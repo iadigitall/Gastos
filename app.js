@@ -854,17 +854,15 @@ function renderCategoryGrid() {
   const trigger  = grid.querySelector('#cat-trigger');
   const list     = grid.querySelector('#cat-list');
   const dropdown = grid.querySelector('#cat-dropdown');
-  const submitBtn = document.getElementById('btn-submit-expense');
   const bottomNav = document.getElementById('bottom-nav');
 
-  // O botao de confirmar e o nav flutuante (ambos position:fixed) pintam por
-  // cima da lista aberta mesmo com o z-index da lista correto (bug de
-  // compositing/stacking-context); escondendo os dois enquanto a lista esta
-  // aberta evita a sobreposicao visual de vez.
+  // A lista fica no fluxo normal (sem position:absolute) para empurrar o
+  // botao de confirmar para baixo/cima junto com ela, em vez de flutuar por
+  // cima dele. O nav continua position:fixed (flutua sobre o conteudo por
+  // design), entao ele so some enquanto a lista estiver aberta.
   const setListOpen = (open) => {
     list.classList.toggle('hidden', !open);
     dropdown.classList.toggle('open', open);
-    if (submitBtn) submitBtn.style.visibility = open ? 'hidden' : '';
     if (bottomNav) bottomNav.style.visibility = open ? 'hidden' : '';
   };
 

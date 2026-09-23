@@ -618,7 +618,6 @@ body::after {
 .cat-trigger-chevron { display: flex; align-items: center; color: var(--muted); transition: transform 0.2s; }
 .cat-dropdown.open .cat-trigger-chevron { transform: rotate(180deg); }
 .cat-list {
-  position: absolute; left: 0; right: 0; z-index: 100;
   background: var(--card); border: 1.5px solid var(--green);
   border-top: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;
   display: grid; grid-template-columns: 1fr 1fr;
