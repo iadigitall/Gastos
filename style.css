@@ -1503,6 +1503,11 @@ body::after {
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 .header-logout-btn.visible { display: flex; }
+@media (max-width: 768px) {
+  /* No mobile o cabecalho fica estreito demais pro botao Sair caber sem
+     cortar — sair ja esta disponivel na tela de Perfil. */
+  .header-logout-btn.visible { display: none; }
+}
 .header-logout-btn:hover {
   border-color: rgba(255,68,68,0.4);
   color: var(--danger);
