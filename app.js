@@ -854,27 +854,33 @@ function renderCategoryGrid() {
   const trigger  = grid.querySelector('#cat-trigger');
   const list     = grid.querySelector('#cat-list');
   const dropdown = grid.querySelector('#cat-dropdown');
+  const submitBtn = document.getElementById('btn-submit-expense');
+
+  // Chrome pode pintar o botao de confirmar por cima da lista aberta (bug de
+  // compositing da GPU) mesmo com o z-index correto; escondendo o botao
+  // enquanto a lista esta aberta evita a sobreposicao visual de vez.
+  const setListOpen = (open) => {
+    list.classList.toggle('hidden', !open);
+    dropdown.classList.toggle('open', open);
+    if (submitBtn) submitBtn.style.visibility = open ? 'hidden' : '';
+  };
 
   trigger.addEventListener('click', (e) => {
     e.stopPropagation();
-    const open = !list.classList.contains('hidden');
-    list.classList.toggle('hidden', open);
-    dropdown.classList.toggle('open', !open);
+    setListOpen(list.classList.contains('hidden'));
   });
 
   list.querySelectorAll('.cat-item').forEach(item => {
     item.addEventListener('click', () => {
       state.selectedCategory = item.dataset.cat;
-      list.classList.add('hidden');
-      dropdown.classList.remove('open');
+      setListOpen(false);
       renderCategoryGrid();
     });
   });
 
   document.addEventListener('click', function closeDrop(e) {
     if (!dropdown.contains(e.target)) {
-      list.classList.add('hidden');
-      dropdown.classList.remove('open');
+      setListOpen(false);
       document.removeEventListener('click', closeDrop);
     }
   });

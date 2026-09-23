@@ -441,7 +441,7 @@
         <h2>Adicionar Gasto</h2>
       </div>
       <div class="view-content">
-        <form id="form-expense">
+        <form id="form-expense" autocomplete="off">
           <div class="form-group">
             <label for="expense-desc">O que foi?</label>
             <input id="expense-desc" type="text" placeholder="Ex: Almoço, Uber, Mercado..." autocomplete="off">
@@ -450,7 +450,7 @@
             <label for="expense-value">Valor</label>
             <div class="value-input-wrap">
               <span class="value-input-prefix">R$</span>
-              <input id="expense-value" class="value-input-big" type="number" step="0.01" min="0.01" placeholder="0,00" inputmode="decimal">
+              <input id="expense-value" class="value-input-big" type="number" step="0.01" min="0.01" placeholder="0,00" inputmode="decimal" autocomplete="off">
             </div>
           </div>
           <div class="form-group">
